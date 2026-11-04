@@ -1,81 +1,142 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import { supabase } from '@/lib/supabase';
 
-export interface BaseItem {
+export interface ExpenseRecord {
   id: string;
   user_id: string;
-  title: string;
-  category: string;
   amount: number;
-  date: string;
-  note?: string;
+  category: string;
+  spent_on: string;
+  note: string;
   created_at?: string;
 }
 
 interface DataContextType {
-  items: BaseItem[];
+  expenses: ExpenseRecord[];
   loading: boolean;
-  addItem: (item: Omit<BaseItem, 'id' | 'user_id' | 'created_at'>) => Promise<void>;
-  deleteItem: (id: string) => Promise<void>;
-  clearItems: () => void;
+  addExpense: (expense: {
+    amount: number;
+    category: string;
+    spent_on: string;
+    note: string;
+  }) => Promise<{ error: any | null }>;
+  deleteExpense: (id: string) => Promise<{ error: any | null }>;
+  refreshExpenses: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType>({
-  items: [],
+  expenses: [],
   loading: false,
-  addItem: async () => {},
-  deleteItem: async () => {},
-  clearItems: () => {},
+  addExpense: async () => ({ error: null }),
+  deleteExpense: async () => ({ error: null }),
+  refreshExpenses: async () => {},
 });
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const [items, setItems] = useState<BaseItem[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseRecord[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchExpenses = useCallback(async () => {
     if (!user) {
-      setItems([]);
+      setExpenses([]);
       return;
     }
-
-    // Load initial user data here
-    // In React Context, data resets on logout and re-fetches for a new user
     setLoading(true);
-    // Placeholder demonstration
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase
+        .from('expenses')
+        .select('*')
+        .order('spent_on', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching expenses from Supabase:', error);
+      } else if (data) {
+        setExpenses(data as ExpenseRecord[]);
+      }
+    } catch (err) {
+      console.error('Error loading expenses:', err);
+    } finally {
       setLoading(false);
-    }, 200);
+    }
   }, [user]);
 
-  const addItem = async (newItem: Omit<BaseItem, 'id' | 'user_id' | 'created_at'>) => {
-    if (!user) return;
-    const item: BaseItem = {
-      ...newItem,
-      id: Math.random().toString(36).substring(2, 9),
+  // Load once after login and clear on logout / different user login
+  useEffect(() => {
+    if (user) {
+      fetchExpenses();
+    } else {
+      setExpenses([]);
+    }
+  }, [user, fetchExpenses]);
+
+  const addExpense = async (newExpense: {
+    amount: number;
+    category: string;
+    spent_on: string;
+    note: string;
+  }) => {
+    if (!user) return { error: new Error('User not logged in') };
+
+    const payload = {
       user_id: user.id,
-      created_at: new Date().toISOString(),
+      amount: newExpense.amount,
+      category: newExpense.category,
+      spent_on: newExpense.spent_on,
+      note: newExpense.note || '',
     };
-    // Prepend (newest first)
-    setItems((prev) => [item, ...prev]);
+
+    const { data, error } = await supabase
+      .from('expenses')
+      .insert([payload])
+      .select()
+      .single();
+
+    if (error) {
+      return { error };
+    }
+
+    if (data) {
+      // Prepend to show immediately in the list
+      setExpenses((prev) => [data as ExpenseRecord, ...prev]);
+    }
+
+    return { error: null };
   };
 
-  const deleteItem = async (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  const deleteExpense = async (id: string) => {
+    if (!user) return { error: new Error('User not logged in') };
 
-  const clearItems = () => {
-    setItems([]);
+    const { error } = await supabase
+      .from('expenses')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      return { error };
+    }
+
+    setExpenses((prev) => prev.filter((item) => item.id !== id));
+    return { error: null };
   };
 
   return (
-    <DataContext.Provider value={{ items, loading, addItem, deleteItem, clearItems }}>
+    <DataContext.Provider
+      value={{
+        expenses,
+        loading,
+        addExpense,
+        deleteExpense,
+        refreshExpenses: fetchExpenses,
+      }}
+    >
       {children}
     </DataContext.Provider>
   );
 }
 
 export const useData = () => useContext(DataContext);
-

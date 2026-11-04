@@ -2,24 +2,17 @@
 
 import React, { useState } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { useData } from '@/context/DataContext';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface ExpenseItem {
-  id: string;
-  category: string;
-  amount: number;
-  date: string;
-  note?: string;
-}
-
 const CATEGORIES = ['Food', 'Transport', 'Shopping', 'Bills', 'Other'];
 
 export default function ExpensesPage() {
-  const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
-  
+  const { expenses, addExpense, deleteExpense } = useData();
+
   // Form state
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
@@ -36,6 +29,7 @@ export default function ExpensesPage() {
   }>({});
   const [success, setSuccess] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filters state
   const [filterCategory, setFilterCategory] = useState('');
@@ -109,7 +103,7 @@ export default function ExpensesPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     const errs = validate(amount, category, date, note);
@@ -117,19 +111,22 @@ export default function ExpensesPage() {
 
     if (Object.keys(errs).length > 0) return;
 
-    try {
-      const newExpense: ExpenseItem = {
-        id: Math.random().toString(36).substring(2, 9),
-        category,
-        amount: parseFloat(amount),
-        date,
-        note: note.trim() || undefined,
-      };
+    setIsSubmitting(true);
+    const { error } = await addExpense({
+      amount: parseFloat(amount),
+      category,
+      spent_on: date,
+      note: note.trim(),
+    });
 
-      // Add to state (newest date first, if equal dates, added last first)
-      setExpenses((prev) => [newExpense, ...prev]);
+    setIsSubmitting(false);
 
-      // Reset form
+    if (error) {
+      setErrors((prev) => ({
+        ...prev,
+        expense: error.message || 'Error adding expense to Supabase',
+      }));
+    } else {
       setAmount('');
       setCategory('');
       setDate('');
@@ -137,13 +134,11 @@ export default function ExpensesPage() {
       setSubmitted(false);
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-    } catch (err: any) {
-      setErrors((prev) => ({ ...prev, expense: err.message || 'Error adding expense' }));
     }
   };
 
-  const handleDelete = (id: string) => {
-    setExpenses((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = async (id: string) => {
+    await deleteExpense(id);
   };
 
   const handleClearFilters = () => {
@@ -154,17 +149,17 @@ export default function ExpensesPage() {
   // Filter expenses
   const filteredExpenses = expenses.filter((item) => {
     if (filterCategory && item.category !== filterCategory) return false;
-    if (filterMonth && !item.date.startsWith(filterMonth)) return false;
+    if (filterMonth && !item.spent_on.startsWith(filterMonth)) return false;
     return true;
   });
 
   // Calculate summary
-  const totalAmount = filteredExpenses.reduce((sum, item) => sum + item.amount, 0);
+  const totalAmount = filteredExpenses.reduce((sum, item) => sum + Number(item.amount), 0);
   const expenseCount = filteredExpenses.length;
 
   const categoryBreakdown = Object.entries(
     filteredExpenses.reduce((acc, item) => {
-      acc[item.category] = (acc[item.category] || 0) + item.amount;
+      acc[item.category] = (acc[item.category] || 0) + Number(item.amount);
       return acc;
     }, {} as Record<string, number>)
   )
@@ -271,8 +266,13 @@ export default function ExpensesPage() {
                     )}
                   </div>
 
-                  <Button type="submit" data-testid="btn-add-expense" className="w-full">
-                    Add Expense
+                  <Button
+                    type="submit"
+                    data-testid="btn-add-expense"
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Adding...' : 'Add Expense'}
                   </Button>
                 </CardContent>
               </form>
@@ -397,12 +397,12 @@ export default function ExpensesPage() {
                               {item.category}
                             </span>
                             <span data-testid="expense-amount" className="font-bold">
-                              ${item.amount.toFixed(2)}
+                              ${Number(item.amount).toFixed(2)}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <span data-testid="expense-date">
-                              {item.date.replace(/-/g, '')}
+                              {item.spent_on.replace(/-/g, '')}
                             </span>
                             {item.note && (
                               <span data-testid="expense-note" className="italic">
@@ -431,4 +431,3 @@ export default function ExpensesPage() {
     </ProtectedRoute>
   );
 }
-
