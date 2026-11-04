@@ -54,7 +54,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching expenses from Supabase:', error);
+        // Log friendly warning if table has not been created yet in Supabase
+        if (error.code === 'PGRST205') {
+          console.warn(
+            'Notice: Table "expenses" does not exist yet in Supabase. Please run supabase/expenses.sql in your Supabase SQL Editor.'
+          );
+        } else {
+          console.error('Error fetching expenses from Supabase:', error.message || error);
+        }
       } else if (data) {
         setExpenses(data as ExpenseRecord[]);
       }
