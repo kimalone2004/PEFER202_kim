@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PlusCircle, RotateCcw, Trash2, Wallet, Layers, Calendar, Tag } from 'lucide-react';
 
 const CATEGORIES = ['Food', 'Transport', 'Shopping', 'Bills', 'Other'];
 
@@ -168,32 +169,51 @@ export default function ExpensesPage() {
 
   return (
     <ProtectedRoute>
-      <div data-testid="expenses-page" className="container mx-auto px-4 py-8 max-w-6xl">
-        <h1 className="text-3xl font-bold tracking-tight mb-8">Expenses Manager</h1>
+      <div data-testid="expenses-page" className="container mx-auto px-6 py-10 max-w-6xl">
+        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#1c2e22]">
+              Expenses Manager
+            </h1>
+            <p className="text-sm text-[#5a705e] mt-1">
+              Track, organize, and inspect your financial footprint
+            </p>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column: Form & Filters */}
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Add Expense</CardTitle>
+            <Card className="rounded-[2rem] border-[#e3ebd9] bg-white shadow-sm p-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold flex items-center gap-2 text-[#1c2e22]">
+                  <PlusCircle className="w-5 h-5 text-[#2d5a37]" /> Add Expense
+                </CardTitle>
               </CardHeader>
               <form data-testid="expense-form" noValidate onSubmit={handleSubmit}>
                 <CardContent className="space-y-4">
                   {success && (
-                    <div data-testid="expense-success" className="p-3 text-sm text-green-700 bg-green-100 rounded-md">
+                    <div
+                      data-testid="expense-success"
+                      className="p-3 text-sm text-[#204028] bg-[#e9f2e4] border border-[#c5dbb8] rounded-2xl font-semibold"
+                    >
                       Expense added
                     </div>
                   )}
 
                   {errors.expense && (
-                    <div data-testid="error-expense" className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                    <div
+                      data-testid="error-expense"
+                      className="p-3 text-sm text-destructive bg-destructive/10 rounded-2xl"
+                    >
                       {errors.expense}
                     </div>
                   )}
 
-                  <div className="space-y-1">
-                    <Label htmlFor="amount">Amount</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="amount" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
+                      Amount
+                    </Label>
                     <Input
                       id="amount"
                       type="number"
@@ -202,22 +222,25 @@ export default function ExpensesPage() {
                       value={amount}
                       onChange={handleAmountChange}
                       placeholder="0.00"
+                      className="h-11 rounded-xl border-[#d8e5cd] focus-visible:ring-[#2d5a37]"
                     />
                     {errors.amount && (
-                      <p data-testid="error-amount" className="text-xs text-destructive">
+                      <p data-testid="error-amount" className="text-xs text-destructive font-medium">
                         {errors.amount}
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-1">
-                    <Label htmlFor="category">Category</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="category" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
+                      Category
+                    </Label>
                     <select
                       id="category"
                       data-testid="select-category"
                       value={category}
                       onChange={handleCategoryChange}
-                      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      className="flex h-11 w-full rounded-xl border border-[#d8e5cd] bg-white px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#2d5a37]"
                     >
                       <option value="">Choose category</option>
                       {CATEGORIES.map((cat) => (
@@ -227,30 +250,35 @@ export default function ExpensesPage() {
                       ))}
                     </select>
                     {errors.category && (
-                      <p data-testid="error-category" className="text-xs text-destructive">
+                      <p data-testid="error-category" className="text-xs text-destructive font-medium">
                         {errors.category}
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-1">
-                    <Label htmlFor="date">Date</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="date" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
+                      Date
+                    </Label>
                     <Input
                       id="date"
                       type="date"
                       data-testid="input-date"
                       value={date}
                       onChange={handleDateChange}
+                      className="h-11 rounded-xl border-[#d8e5cd] focus-visible:ring-[#2d5a37]"
                     />
                     {errors.date && (
-                      <p data-testid="error-date" className="text-xs text-destructive">
+                      <p data-testid="error-date" className="text-xs text-destructive font-medium">
                         {errors.date}
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-1">
-                    <Label htmlFor="note">Note (Optional)</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="note" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
+                      Note (Optional)
+                    </Label>
                     <Input
                       id="note"
                       type="text"
@@ -258,9 +286,10 @@ export default function ExpensesPage() {
                       value={note}
                       onChange={handleNoteChange}
                       placeholder="Short note"
+                      className="h-11 rounded-xl border-[#d8e5cd] focus-visible:ring-[#2d5a37]"
                     />
                     {errors.note && (
-                      <p data-testid="error-note" className="text-xs text-destructive">
+                      <p data-testid="error-note" className="text-xs text-destructive font-medium">
                         {errors.note}
                       </p>
                     )}
@@ -269,7 +298,7 @@ export default function ExpensesPage() {
                   <Button
                     type="submit"
                     data-testid="btn-add-expense"
-                    className="w-full"
+                    className="w-full h-11 rounded-full bg-[#2d5a37] text-white hover:bg-[#204028] font-bold shadow-md mt-2"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? 'Adding...' : 'Add Expense'}
@@ -279,19 +308,23 @@ export default function ExpensesPage() {
             </Card>
 
             {/* Filter Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Filters</CardTitle>
+            <Card className="rounded-[2rem] border-[#e3ebd9] bg-white shadow-sm p-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl font-bold flex items-center gap-2 text-[#1c2e22]">
+                  <RotateCcw className="w-5 h-5 text-[#2d5a37]" /> Filter Records
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-1">
-                  <Label htmlFor="filter-category">Filter Category</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="filter-category" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
+                    Filter Category
+                  </Label>
                   <select
                     id="filter-category"
                     data-testid="filter-category"
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    className="flex h-11 w-full rounded-xl border border-[#d8e5cd] bg-white px-3 py-1 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#2d5a37]"
                   >
                     <option value="">All</option>
                     {CATEGORIES.map((cat) => (
@@ -302,14 +335,17 @@ export default function ExpensesPage() {
                   </select>
                 </div>
 
-                <div className="space-y-1">
-                  <Label htmlFor="filter-month">Filter Month</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="filter-month" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
+                    Filter Month
+                  </Label>
                   <Input
                     id="filter-month"
                     type="month"
                     data-testid="filter-month"
                     value={filterMonth}
                     onChange={(e) => setFilterMonth(e.target.value)}
+                    className="h-11 rounded-xl border-[#d8e5cd] focus-visible:ring-[#2d5a37]"
                   />
                 </div>
 
@@ -317,9 +353,9 @@ export default function ExpensesPage() {
                   variant="outline"
                   data-testid="btn-clear-filters"
                   onClick={handleClearFilters}
-                  className="w-full"
+                  className="w-full h-11 rounded-full border-[#d8e5cd] text-[#2d5a37] hover:bg-[#e9f2e4] font-semibold"
                 >
-                  Clear
+                  Clear Filters
                 </Button>
               </CardContent>
             </Card>
@@ -328,56 +364,70 @@ export default function ExpensesPage() {
           {/* Right Column: List & Summary */}
           <div className="lg:col-span-2 space-y-6">
             {/* Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Summary</CardTitle>
+            <Card className="rounded-[2rem] border-[#e3ebd9] bg-[#e9f2e4]/70 shadow-sm p-4">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg font-bold text-[#2d5a37] flex items-center gap-2">
+                  <Wallet className="w-5 h-5 text-[#2d5a37]" /> Spending Summary
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <span className="text-xs text-muted-foreground uppercase">Total Amount</span>
-                    <p data-testid="total-amount" className="text-2xl font-bold">
+                  <div className="bg-white p-4 rounded-2xl border border-[#d8e5cd]">
+                    <span className="text-[11px] font-bold text-[#5a705e] uppercase tracking-wider">
+                      Total Amount
+                    </span>
+                    <p data-testid="total-amount" className="text-2xl sm:text-3xl font-black text-[#2d5a37] mt-1">
                       ${totalAmount.toFixed(2)}
                     </p>
                   </div>
-                  <div>
-                    <span className="text-xs text-muted-foreground uppercase">Expenses Count</span>
-                    <p data-testid="expense-count" className="text-2xl font-bold">
+                  <div className="bg-white p-4 rounded-2xl border border-[#d8e5cd]">
+                    <span className="text-[11px] font-bold text-[#5a705e] uppercase tracking-wider">
+                      Expenses Count
+                    </span>
+                    <p data-testid="expense-count" className="text-2xl sm:text-3xl font-black text-[#1c2e22] mt-1">
                       {expenseCount}
                     </p>
                   </div>
                 </div>
 
-                <div className="border-t pt-4">
-                  <h4 className="text-sm font-semibold mb-2">Category Breakdown</h4>
-                  <div data-testid="category-breakdown" className="space-y-2">
-                    {categoryBreakdown.map((row) => (
-                      <div
-                        key={row.category}
-                        data-testid="breakdown-row"
-                        className="flex justify-between items-center text-sm py-1 border-b border-muted/50 last:border-0"
-                      >
-                        <span data-testid="breakdown-name" className="font-medium">
-                          {row.category}
-                        </span>
-                        <span data-testid="breakdown-amount" className="text-muted-foreground">
-                          ${row.total.toFixed(2)}
-                        </span>
-                      </div>
-                    ))}
+                <div className="bg-white p-5 rounded-2xl border border-[#d8e5cd]">
+                  <h4 className="text-xs font-bold text-[#5a705e] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <Layers className="w-4 h-4 text-[#2d5a37]" /> Category Breakdown
+                  </h4>
+                  <div data-testid="category-breakdown" className="space-y-2.5">
+                    {categoryBreakdown.length === 0 ? (
+                      <p className="text-xs text-[#5a705e] italic">No category data to display</p>
+                    ) : (
+                      categoryBreakdown.map((row) => (
+                        <div
+                          key={row.category}
+                          data-testid="breakdown-row"
+                          className="flex justify-between items-center text-sm py-1.5 border-b border-[#f0f4ea] last:border-0"
+                        >
+                          <span data-testid="breakdown-name" className="font-semibold text-[#1c2e22]">
+                            {row.category}
+                          </span>
+                          <span data-testid="breakdown-amount" className="font-bold text-[#2d5a37]">
+                            ${row.total.toFixed(2)}
+                          </span>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* List */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Expense Records</CardTitle>
+            <Card className="rounded-[2rem] border-[#e3ebd9] bg-white shadow-sm p-4">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl font-bold text-[#1c2e22]">
+                  Expense Records
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {filteredExpenses.length === 0 ? (
-                  <div data-testid="expenses-empty" className="text-center py-8 text-muted-foreground">
+                  <div data-testid="expenses-empty" className="text-center py-12 text-[#5a705e] text-sm">
                     No expenses found
                   </div>
                 ) : (
@@ -386,38 +436,39 @@ export default function ExpensesPage() {
                       <div
                         key={item.id}
                         data-testid="expense-item"
-                        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border bg-card gap-2"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl border border-[#e3ebd9] bg-[#fbfbf7] hover:bg-[#f4f7ef] transition-colors gap-3"
                       >
                         <div className="space-y-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2.5">
                             <span
                               data-testid="expense-category"
-                              className="font-semibold text-sm bg-primary/10 text-primary px-2 py-0.5 rounded"
+                              className="font-bold text-xs bg-[#2d5a37] text-white px-2.5 py-1 rounded-full shadow-xs"
                             >
                               {item.category}
                             </span>
-                            <span data-testid="expense-amount" className="font-bold">
+                            <span data-testid="expense-amount" className="font-black text-lg text-[#1c2e22]">
                               ${Number(item.amount).toFixed(2)}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span data-testid="expense-date">
+                          <div className="flex items-center gap-2 text-xs text-[#5a705e]">
+                            <span data-testid="expense-date" className="font-semibold">
                               {item.spent_on.replace(/-/g, '')}
                             </span>
                             {item.note && (
-                              <span data-testid="expense-note" className="italic">
-                                - {item.note}
+                              <span data-testid="expense-note" className="italic text-[#718774]">
+                                • {item.note}
                               </span>
                             )}
                           </div>
                         </div>
                         <Button
-                          variant="destructive"
+                          variant="ghost"
                           size="sm"
                           data-testid="btn-delete-expense"
                           onClick={() => handleDelete(item.id)}
+                          className="rounded-full text-destructive hover:bg-destructive/10 self-end sm:self-center"
                         >
-                          Delete
+                          <Trash2 className="w-4 h-4 mr-1" /> Delete
                         </Button>
                       </div>
                     ))}

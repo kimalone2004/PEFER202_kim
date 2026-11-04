@@ -49,72 +49,57 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Warm eco/nature palette inspired by Poulls design */
+  --background: #fbfbf7;
+  --foreground: #1c2e22;
+  --card: #ffffff;
+  --card-foreground: #1c2e22;
+  --popover: #ffffff;
+  --popover-foreground: #1c2e22;
+  
+  /* Primary forest / deep nature green (#2d5a37) */
+  --primary: #2d5a37;
+  --primary-foreground: #ffffff;
+  
+  /* Sage / light olive accent (#c5dbb8) */
+  --secondary: #e9f2e4;
+  --secondary-foreground: #204028;
+  
+  --muted: #f2f6ee;
+  --muted-foreground: #5a705e;
+  
+  --accent: #d8e8ce;
+  --accent-foreground: #1c2e22;
+  
+  --destructive: #d94841;
+  --destructive-foreground: #ffffff;
+  
+  --border: #e3ebd9;
+  --input: #d8e5cd;
+  --ring: #4f805a;
+  
+  --radius: 1.125rem; /* modern rounded pill-like corners */
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #111a13;
+  --foreground: #eef5ed;
+  --card: #18261c;
+  --card-foreground: #eef5ed;
+  --popover: #18261c;
+  --popover-foreground: #eef5ed;
+  --primary: #4b865a;
+  --primary-foreground: #ffffff;
+  --secondary: #223727;
+  --secondary-foreground: #eef5ed;
+  --muted: #1c2c20;
+  --muted-foreground: #8fa894;
+  --accent: #2c4733;
+  --accent-foreground: #eef5ed;
+  --destructive: #b33933;
+  --border: #263c2c;
+  --input: #263c2c;
+  --ring: #579968;
 }
 
 @layer base {
