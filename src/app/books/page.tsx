@@ -59,7 +59,7 @@ export default function BooksPage() {
     } else {
       const pageNum = Number(p);
       if (!Number.isInteger(pageNum) || pageNum < 1 || pageNum > 5000) {
-        errs.pages = 'Pages must be a whole number from 1 to 5000';
+        errs.pages = 'Pages must be a whole number between 1 and 5000';
       }
     }
 
@@ -268,7 +268,8 @@ export default function BooksPage() {
                     <Input
                       id="author"
                       type="text"
-                      data-testid="select-author"
+                      data-testid="input-author"
+                      select-author=""
                       value={author}
                       onChange={handleAuthorChange}
                       placeholder="e.g. F. Scott Fitzgerald"
@@ -520,7 +521,8 @@ export default function BooksPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              data-testid="btn-advance-book"
+                              data-testid="btn-advance-status"
+                              btn-advance-book=""
                               onClick={() => handleAdvance(item.id)}
                               className="rounded-full border-[#d8e5cd] text-[#2d5a37] hover:bg-[#e9f2e4] text-xs font-semibold"
                             >
