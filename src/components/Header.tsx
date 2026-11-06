@@ -30,11 +30,11 @@ export function Header() {
           {user ? (
             <>
               <Link
-                href="/expenses"
-                data-testid="link-expenses"
+                href="/books"
+                data-testid="link-books"
                 className="text-sm font-semibold text-[#2d5a37] hover:bg-[#e9f2e4] px-4 py-2 rounded-full transition-colors"
               >
-                Expenses
+                Books
               </Link>
               <span
                 data-testid="user-email"

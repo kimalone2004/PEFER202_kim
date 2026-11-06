@@ -4,69 +4,69 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useAuth } from './AuthContext';
 import { supabase } from '@/lib/supabase';
 
-export interface ExpenseRecord {
+export interface BookRecord {
   id: string;
   user_id: string;
-  amount: number;
-  category: string;
-  spent_on: string;
-  note: string;
+  title: string;
+  author: string;
+  pages: number;
+  status: 'To Read' | 'Reading' | 'Finished';
   created_at?: string;
 }
 
 interface DataContextType {
-  expenses: ExpenseRecord[];
+  books: BookRecord[];
   loading: boolean;
-  addExpense: (expense: {
-    amount: number;
-    category: string;
-    spent_on: string;
-    note: string;
+  addBook: (book: {
+    title: string;
+    author: string;
+    pages: number;
+    status: 'To Read' | 'Reading' | 'Finished';
   }) => Promise<{ error: any | null }>;
-  deleteExpense: (id: string) => Promise<{ error: any | null }>;
-  refreshExpenses: () => Promise<void>;
+  advanceBook: (id: string) => Promise<{ error: any | null }>;
+  deleteBook: (id: string) => Promise<{ error: any | null }>;
+  refreshBooks: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType>({
-  expenses: [],
+  books: [],
   loading: false,
-  addExpense: async () => ({ error: null }),
-  deleteExpense: async () => ({ error: null }),
-  refreshExpenses: async () => {},
+  addBook: async () => ({ error: null }),
+  advanceBook: async () => ({ error: null }),
+  deleteBook: async () => ({ error: null }),
+  refreshBooks: async () => {},
 });
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const [expenses, setExpenses] = useState<ExpenseRecord[]>([]);
+  const [books, setBooks] = useState<BookRecord[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchExpenses = useCallback(async () => {
+  const fetchBooks = useCallback(async () => {
     if (!user) {
-      setExpenses([]);
+      setBooks([]);
       return;
     }
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('expenses')
+        .from('books')
         .select('*')
-        .order('spent_on', { ascending: false })
         .order('created_at', { ascending: false });
 
       if (error) {
-        // Log friendly warning if table has not been created yet in Supabase
         if (error.code === 'PGRST205') {
           console.warn(
-            'Notice: Table "expenses" does not exist yet in Supabase. Please run supabase/expenses.sql in your Supabase SQL Editor.'
+            'Notice: Table "books" does not exist yet in Supabase. Please run supabase/books.sql in your Supabase SQL Editor.'
           );
         } else {
-          console.error('Error fetching expenses from Supabase:', error.message || error);
+          console.error('Error fetching books from Supabase:', error.message || error);
         }
       } else if (data) {
-        setExpenses(data as ExpenseRecord[]);
+        setBooks(data as BookRecord[]);
       }
     } catch (err) {
-      console.error('Error loading expenses:', err);
+      console.error('Error loading books:', err);
     } finally {
       setLoading(false);
     }
@@ -75,30 +75,30 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   // Load once after login and clear on logout / different user login
   useEffect(() => {
     if (user) {
-      fetchExpenses();
+      fetchBooks();
     } else {
-      setExpenses([]);
+      setBooks([]);
     }
-  }, [user, fetchExpenses]);
+  }, [user, fetchBooks]);
 
-  const addExpense = async (newExpense: {
-    amount: number;
-    category: string;
-    spent_on: string;
-    note: string;
+  const addBook = async (newBook: {
+    title: string;
+    author: string;
+    pages: number;
+    status: 'To Read' | 'Reading' | 'Finished';
   }) => {
     if (!user) return { error: new Error('User not logged in') };
 
     const payload = {
       user_id: user.id,
-      amount: newExpense.amount,
-      category: newExpense.category,
-      spent_on: newExpense.spent_on,
-      note: newExpense.note || '',
+      title: newBook.title.trim(),
+      author: newBook.author.trim(),
+      pages: Number(newBook.pages),
+      status: newBook.status,
     };
 
     const { data, error } = await supabase
-      .from('expenses')
+      .from('books')
       .insert([payload])
       .select()
       .single();
@@ -108,18 +108,50 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (data) {
-      // Prepend to show immediately in the list
-      setExpenses((prev) => [data as ExpenseRecord, ...prev]);
+      // Prepend to show immediately in the list (most recently added first)
+      setBooks((prev) => [data as BookRecord, ...prev]);
     }
 
     return { error: null };
   };
 
-  const deleteExpense = async (id: string) => {
+  const advanceBook = async (id: string) => {
+    if (!user) return { error: new Error('User not logged in') };
+
+    const currentBook = books.find((b) => b.id === id);
+    if (!currentBook) return { error: new Error('Book not found') };
+
+    let nextStatus: 'To Read' | 'Reading' | 'Finished' = currentBook.status;
+    if (currentBook.status === 'To Read') {
+      nextStatus = 'Reading';
+    } else if (currentBook.status === 'Reading') {
+      nextStatus = 'Finished';
+    } else {
+      return { error: null }; // Already Finished
+    }
+
+    const { error } = await supabase
+      .from('books')
+      .update({ status: nextStatus })
+      .eq('id', id);
+
+    if (error) {
+      return { error };
+    }
+
+    // Update state immediately
+    setBooks((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, status: nextStatus } : b))
+    );
+
+    return { error: null };
+  };
+
+  const deleteBook = async (id: string) => {
     if (!user) return { error: new Error('User not logged in') };
 
     const { error } = await supabase
-      .from('expenses')
+      .from('books')
       .delete()
       .eq('id', id);
 
@@ -127,18 +159,19 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       return { error };
     }
 
-    setExpenses((prev) => prev.filter((item) => item.id !== id));
+    setBooks((prev) => prev.filter((item) => item.id !== id));
     return { error: null };
   };
 
   return (
     <DataContext.Provider
       value={{
-        expenses,
+        books,
         loading,
-        addExpense,
-        deleteExpense,
-        refreshExpenses: fetchExpenses,
+        addBook,
+        advanceBook,
+        deleteBook,
+        refreshBooks: fetchBooks,
       }}
     >
       {children}

@@ -77,7 +77,7 @@ export default function LoginPage() {
         });
         if (error) throw error;
       }
-      router.push('/expenses');
+      router.push('/books');
     } catch (err: any) {
       setErrors((prev) => ({ ...prev, auth: err.message || 'Authentication failed' }));
     } finally {
@@ -93,7 +93,7 @@ export default function LoginPage() {
             <Leaf className="w-6 h-6 fill-current" />
           </div>
           <CardTitle className="text-2xl font-black text-[#1c2e22]">Welcome Back</CardTitle>
-          <p className="text-sm text-[#5a705e]">Sign in to manage your mindful spending</p>
+          <p className="text-sm text-[#5a705e]">Sign in to manage your shelf</p>
         </CardHeader>
         <form data-testid="login-form" noValidate onSubmit={handleSubmit}>
           <CardContent className="space-y-4">

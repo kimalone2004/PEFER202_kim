@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { DollarSign, Filter, PieChart, ArrowUpRight } from "lucide-react";
+import { BookPlus, BookmarkCheck, Search, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -11,22 +11,22 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#2d5a37] via-[#356740] to-[#204028] text-white p-8 sm:p-14 shadow-xl">
           <div className="relative z-10 max-w-2xl space-y-6">
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold backdrop-blur-md text-[#d8e8ce]">
-              🌿 Eco-Smart Financial Tracker
+              📚 Your Personal Reading Sanctuary
             </span>
             <h1
               data-testid="home-title"
               className="text-4xl sm:text-6xl font-black tracking-tight leading-[1.1]"
             >
-              SpendWise
+              ShelfLife
             </h1>
             <p className="text-base sm:text-lg text-white/80 leading-relaxed max-w-xl">
-              Take mindful control of your daily financial habits with an elegant, eco-themed expense tracker designed for simplicity and peace of mind.
+              Keep a thoughtful list of books you want to read, are reading, or have finished on your shelf.
             </p>
 
             <div className="pt-2 flex flex-wrap gap-4 items-center">
-              <Link href="/expenses">
+              <Link href="/books">
                 <Button className="rounded-full bg-[#d8e8ce] text-[#1c2e22] hover:bg-[#c5dbb8] font-bold px-7 h-12 shadow-md">
-                  Get Started <ArrowUpRight className="ml-1 w-4 h-4" />
+                  View Shelf <ArrowUpRight className="ml-1 w-4 h-4" />
                 </Button>
               </Link>
             </div>
@@ -45,7 +45,7 @@ export default function Home() {
             Thoughtfully Crafted Features
           </h2>
           <p className="text-2xl sm:text-3xl font-extrabold text-[#1c2e22]">
-            Simpler insights, healthier decisions
+            Build your reading habit, one chapter at a time
           </p>
         </div>
 
@@ -53,13 +53,13 @@ export default function Home() {
           <Card className="rounded-[1.75rem] border-[#e3ebd9] bg-white p-4 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
             <CardHeader className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-[#e9f2e4] flex items-center justify-center text-[#2d5a37]">
-                <DollarSign className="w-6 h-6" />
+                <BookPlus className="w-6 h-6" />
               </div>
               <CardTitle className="text-xl font-bold text-[#1c2e22]">
-                Add expenses
+                Add books
               </CardTitle>
               <CardDescription className="text-sm text-[#5a705e] leading-relaxed">
-                Seamlessly log expenditures with categories, dates, and short memos in seconds.
+                Save any title, author, and page count with instant validation.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -67,13 +67,13 @@ export default function Home() {
           <Card className="rounded-[1.75rem] border-[#e3ebd9] bg-white p-4 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
             <CardHeader className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-[#e9f2e4] flex items-center justify-center text-[#2d5a37]">
-                <Filter className="w-6 h-6" />
+                <BookmarkCheck className="w-6 h-6" />
               </div>
               <CardTitle className="text-xl font-bold text-[#1c2e22]">
-                Filter by month
+                Track your progress
               </CardTitle>
               <CardDescription className="text-sm text-[#5a705e] leading-relaxed">
-                Effortlessly segment your entries by specific periods and category combinations.
+                Easily advance status step-by-step from To Read to Reading and Finished.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -81,13 +81,13 @@ export default function Home() {
           <Card className="rounded-[1.75rem] border-[#e3ebd9] bg-white p-4 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
             <CardHeader className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-[#e9f2e4] flex items-center justify-center text-[#2d5a37]">
-                <PieChart className="w-6 h-6" />
+                <Search className="w-6 h-6" />
               </div>
               <CardTitle className="text-xl font-bold text-[#1c2e22]">
-                See where money goes
+                Search your shelf
               </CardTitle>
               <CardDescription className="text-sm text-[#5a705e] leading-relaxed">
-                Gain clarity on top spending habits through dynamic real-time summaries and breakdowns.
+                Inspect your personal collection and keep your shelf neat and organized.
               </CardDescription>
             </CardHeader>
           </Card>
