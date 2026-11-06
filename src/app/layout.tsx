@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SpendWise',
-  description: 'Track and manage your expenses',
+  title: 'ShelfLife',
+  description: 'Keep track of the books you want to read, are reading or have finished',
 };
 
 export default function RootLayout({

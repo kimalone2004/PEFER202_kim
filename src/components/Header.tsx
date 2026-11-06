@@ -23,7 +23,7 @@ export function Header() {
           <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#2d5a37] text-white shadow-sm">
             <Leaf className="w-5 h-5 fill-current" />
           </span>
-          <span>SpendWise</span>
+          <span>ShelfLife</span>
         </Link>
 
         <nav className="flex items-center gap-3">
