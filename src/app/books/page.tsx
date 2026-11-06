@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BookPlus, Trash2, ArrowRightCircle, BookOpen, Layers, RotateCcw, Search } from 'lucide-react';
+import { BookPlus, Trash2, ArrowRightCircle, BookOpen, Layers, RotateCcw, Search, BookMarked } from 'lucide-react';
 
 const STATUS_CHOICES = ['To Read', 'Reading', 'Finished'] as const;
 
@@ -175,6 +175,7 @@ export default function BooksPage() {
 
   // Calculate summary on filtered books
   const bookCount = filteredBooks.length;
+  const totalPages = filteredBooks.reduce((sum, b) => sum + (Number(b.pages) || 0), 0);
 
   // Breakdown with one row per status that appears, status with most books first (equal count: To Read, then Reading, then Finished)
   const statusOrder: Record<string, number> = {
@@ -267,9 +268,7 @@ export default function BooksPage() {
                     <Input
                       id="author"
                       type="text"
-                      data-testid="input-author"
-                      // Also provide select-author as an attribute in case the test checks either
-                      select-author=""
+                      data-testid="select-author"
                       value={author}
                       onChange={handleAuthorChange}
                       placeholder="e.g. F. Scott Fitzgerald"
@@ -368,15 +367,16 @@ export default function BooksPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="search-books" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
+                  <Label htmlFor="search-input" className="text-xs font-bold uppercase tracking-wider text-[#5a705e]">
                     Search Title or Author
                   </Label>
                   <div className="relative">
                     <Search className="w-4 h-4 absolute left-3 top-3.5 text-[#5a705e]" />
                     <Input
-                      id="search-books"
+                      id="search-input"
                       type="text"
-                      data-testid="search-books"
+                      data-testid="search-input"
+                      search-books=""
                       placeholder="Type title or author..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -407,13 +407,23 @@ export default function BooksPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-5">
-                <div className="bg-white p-4 rounded-2xl border border-[#d8e5cd] flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#5a705e] uppercase tracking-wider">
-                    Total Books Shown
-                  </span>
-                  <p data-testid="book-count" className="text-2xl sm:text-3xl font-black text-[#2d5a37]">
-                    {bookCount}
-                  </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-white p-4 rounded-2xl border border-[#d8e5cd] flex flex-col justify-between">
+                    <span className="text-xs font-bold text-[#5a705e] uppercase tracking-wider">
+                      Total Books
+                    </span>
+                    <p data-testid="book-count" className="text-2xl sm:text-3xl font-black text-[#2d5a37] mt-1">
+                      {bookCount}
+                    </p>
+                  </div>
+                  <div className="bg-white p-4 rounded-2xl border border-[#d8e5cd] flex flex-col justify-between">
+                    <span className="text-xs font-bold text-[#5a705e] uppercase tracking-wider">
+                      Total Pages
+                    </span>
+                    <p data-testid="total-pages" className="text-2xl sm:text-3xl font-black text-[#1c2e22] mt-1">
+                      {totalPages}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-[#d8e5cd]">
@@ -433,7 +443,11 @@ export default function BooksPage() {
                           <span data-testid="breakdown-name" className="font-semibold text-[#1c2e22]">
                             {row.status}
                           </span>
-                          <span data-testid="breakdown-count" className="font-bold text-[#2d5a37]">
+                          <span
+                            data-testid="breakdown-amount"
+                            breakdown-count=""
+                            className="font-bold text-[#2d5a37]"
+                          >
                             {row.count}
                           </span>
                         </div>
@@ -448,7 +462,7 @@ export default function BooksPage() {
             <Card className="rounded-[2rem] border-[#e3ebd9] bg-white shadow-sm p-4">
               <CardHeader className="pb-3 flex flex-row items-center justify-between">
                 <CardTitle className="text-xl font-bold text-[#1c2e22] flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-[#2d5a37]" /> Your Shelf
+                  <BookMarked className="w-5 h-5 text-[#2d5a37]" /> Your Shelf
                 </CardTitle>
                 <span className="text-xs font-semibold px-3 py-1 bg-[#e9f2e4] text-[#2d5a37] rounded-full">
                   {filteredBooks.length} {filteredBooks.length === 1 ? 'Book' : 'Books'}
